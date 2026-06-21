@@ -1,0 +1,29 @@
+services:
+  ncatbot:
+    build:
+      context: .
+    image: btd6bot-ncatbot:latest
+    container_name: btd6bot-ncatbot
+    stdin_open: true
+    tty: true
+    ports:
+      - "6099:6099"
+      - "3001:3001"
+    env_file:
+      - .env
+    environment:
+      TZ: Asia/Shanghai
+      PYTHONUTF8: "1"
+      PYTHONUNBUFFERED: "1"
+    volumes:
+      - ./config.yaml:/root/ncatbot/config.yaml
+      - ./runtime/ncatbot/logs:/root/ncatbot/logs
+      - ./runtime/ncatbot/data:/root/ncatbot/data
+      - ./runtime/plugin/data:/root/ncatbot/plugins/btd6bot_plugin/data
+      - ./runtime/plugin/logs:/root/ncatbot/plugins/btd6bot_plugin/logs
+      - ./runtime/plugin/btd6_api_output:/root/ncatbot/plugins/btd6bot_plugin/btd6_api_processor/output
+      - ./runtime/plugin/chat_monkey_output:/root/ncatbot/plugins/btd6bot_plugin/ChatMonkeyTD/output
+      - ./runtime/QQ:/root/.config/QQ
+    stop_signal: SIGINT
+    stop_grace_period: 8s
+    restart: unless-stopped

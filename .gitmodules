@@ -1,0 +1,3 @@
+[submodule "plugins/btd6bot_plugin"]
+	path = plugins/btd6bot_plugin
+	url = https://github.com/ZiyaoZh/btd6bot_plugin

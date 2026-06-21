@@ -37,7 +37,11 @@ plugin:
       daily_activity_brief:
         enabled: true
         group_ids: []
-        schedule: "07:00"
+        prompt: 请生成今天的 BTD6 活动简报，并直接整理成适合发送到群里的晨间播报。你必须优先调用现有活动查询能力，自行完成信息收集后再给最终答复。请至少覆盖
+          race、boss、odyssey、daily 四类活动；某一类如果暂时查不到，要明确说明缺失，不要编造。输出要求：只输出纯文本，不要 Markdown、不要代码块、不要
+          JSON、不要工具名、不要文件路径。先用一句简短开场，再按活动分段概括名称、时间、关键规则或亮点。不要发送排行榜，不要图片，不要要求用户补充信息。整体保持简洁，控制在
+          600 字以内。
+        schedule: 07:00
   plugin_whitelist: []
   plugins_dir: plugins
   skip_pip_install_confirm: true

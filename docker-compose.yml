@@ -7,8 +7,8 @@ services:
     stdin_open: true
     tty: true
     ports:
-      - "6099:6099"
-      - "3001:3001"
+      - "127.0.0.1:6098:6098"
+      - "127.0.0.1:3001:3001"
     env_file:
       - .env
     environment:

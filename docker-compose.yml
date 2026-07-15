@@ -1,9 +1,38 @@
 services:
+  ssh-proxy:
+    build:
+      context: .
+      target: ssh-proxy
+    image: btd6bot-ssh-proxy:latest
+    container_name: btd6bot-ssh-proxy
+    environment:
+      SSH_TARGET: "${SSH_PROXY_TARGET:?SSH_PROXY_TARGET must be set in .env}"
+    volumes:
+      - "${SSH_PROXY_KEY_PATH:?SSH_PROXY_KEY_PATH must be set in .env}:/run/secrets/ssh_proxy_key:ro"
+      - "${SSH_PROXY_KNOWN_HOSTS_PATH:?SSH_PROXY_KNOWN_HOSTS_PATH must be set in .env}:/run/secrets/ssh_proxy_known_hosts:ro"
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 1080 && nc -z 127.0.0.1 8118"]
+      interval: 5s
+      timeout: 2s
+      retries: 12
+      start_period: 5s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - DAC_READ_SEARCH
+    restart: unless-stopped
+
   ncatbot:
     build:
       context: .
+      target: ncatbot
     image: btd6bot-ncatbot:latest
     container_name: btd6bot-ncatbot
+    depends_on:
+      ssh-proxy:
+        condition: service_healthy
     stdin_open: true
     tty: true
     ports:
@@ -15,6 +44,11 @@ services:
       TZ: Asia/Shanghai
       PYTHONUTF8: "1"
       PYTHONUNBUFFERED: "1"
+      NAPCAT_PROXY_ADDRESS: ssh-proxy
+      NAPCAT_PROXY_PORT: "1080"
+      HTTP_PROXY: http://ssh-proxy:8118
+      HTTPS_PROXY: http://ssh-proxy:8118
+      NO_PROXY: localhost,127.0.0.1,::1,ssh-proxy
     volumes:
       - ./config.yaml:/root/ncatbot/config.yaml
       - ./runtime/ncatbot/logs:/root/ncatbot/logs

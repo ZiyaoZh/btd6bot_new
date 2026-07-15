@@ -16,3 +16,6 @@
 !plugins/
 plugins/*
 !plugins/btd6bot_plugin/
+
+# Host-local deployment credentials and trust anchors
+.private/

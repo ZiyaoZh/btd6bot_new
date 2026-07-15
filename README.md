@@ -30,6 +30,32 @@ cp .env.example .env
 Edit `config.yaml` and `.env` with the production QQ account, administrator QQ,
 NapCat token, target groups, and LLM credentials.
 
+The Compose stack routes QQ and outbound HTTP traffic through an SSH tunnel.
+Keep the SSH target, private-key path, and verified host key in local deployment
+files; none of those values should be committed. Before starting the stack,
+create the private trust-anchor file and fill in `.env`:
+
+```bash
+mkdir -p .private
+cp scripts/ssh-proxy-known-hosts.example .private/ssh-proxy-known-hosts
+```
+
+Replace the placeholder in `.private/ssh-proxy-known-hosts` with the verified
+public host-key line, then set `SSH_PROXY_KEY_PATH`,
+`SSH_PROXY_KNOWN_HOSTS_PATH`, and `SSH_PROXY_TARGET` in `.env`. These paths refer
+to the Docker host, not to a container that happens to mount this repository.
+
+Verify that the configured key and trust anchor can establish a non-interactive
+SSH connection:
+
+```bash
+./scripts/verify_deploy.sh
+```
+
+The proxy sidecar mounts only the configured private key and verified
+`known_hosts` file, both read-only. Changing the proxy address requires
+independently verifying and updating the private trust-anchor file.
+
 Do not commit `config.yaml` or `.env`.
 
 ## Verify
@@ -43,6 +69,15 @@ Do not commit `config.yaml` or `.env`.
 ```bash
 docker compose up -d --build
 docker compose logs -f ncatbot
+```
+
+The `ssh-proxy` service exposes SOCKS port `1080` and HTTP CONNECT port `8118`
+only inside the Compose network. NapCat uses SOCKS directly; Python HTTP and LLM
+requests use the HTTP proxy. Confirm both services are healthy with:
+
+```bash
+docker compose ps
+docker compose logs ssh-proxy
 ```
 
 The container keeps NapCat and NcatBot in one process environment. Runtime files

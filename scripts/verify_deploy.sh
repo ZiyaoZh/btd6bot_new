@@ -8,7 +8,7 @@ required_paths=(
   "scripts/ssh-proxy-entrypoint.sh"
   "plugins/btd6bot_plugin/manifest.toml"
   "plugins/btd6bot_plugin/btd6_api_processor/btd6_cli.py"
-  "plugins/btd6bot_plugin/btd6_knowledge_base/search_index.db"
+  "plugins/btd6bot_plugin/btd6_knowledge_base/knowledge_docs"
   "plugins/btd6bot_plugin/ChatMonkeyTD/main.py"
 )
 

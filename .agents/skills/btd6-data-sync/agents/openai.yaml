@@ -1,0 +1,4 @@
+interface:
+  display_name: "BTD6 Data Sync"
+  short_description: "同步并审计 BTD6 最新内容、中文翻译与 Insta 素材"
+  default_prompt: "Use $btd6-data-sync to sync this repository with the latest BTD6ApiExplorer content data."

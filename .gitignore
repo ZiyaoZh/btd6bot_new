@@ -13,6 +13,13 @@
 !scripts/
 !scripts/**
 
+!.agents/
+.agents/*
+!.agents/skills/
+.agents/skills/*
+!.agents/skills/btd6-data-sync/
+!.agents/skills/btd6-data-sync/**
+
 !plugins/
 plugins/*
 !plugins/btd6bot_plugin/

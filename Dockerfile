@@ -15,12 +15,14 @@ ENTRYPOINT ["/usr/local/bin/ssh-proxy-entrypoint"]
 FROM huanyp/ncatbot:5.5.6@sha256:a38204181be0fdbc00df51985dfa1293f150ba3e7e209f61d2c2d5fba0454197 AS ncatbot
 
 ENV PYTHONUTF8=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    TIKTOKEN_CACHE_DIR=/opt/tiktoken-cache
 
 WORKDIR /root/ncatbot
 
 COPY requirements.deploy.txt /tmp/requirements.deploy.txt
 RUN /root/ncatbot/.venv/bin/pip install --no-cache-dir -r /tmp/requirements.deploy.txt
+RUN /root/ncatbot/.venv/bin/python -c 'import tiktoken; tiktoken.get_encoding("o200k_base")'
 
 COPY plugins/btd6bot_plugin /root/ncatbot/plugins/btd6bot_plugin
 
